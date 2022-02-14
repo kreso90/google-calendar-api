@@ -1,23 +1,17 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import HomePage from './components/HomePage';
+import LoginPage from './components/LoginPage';
 import './App.css';
+import { useGoogleAuth } from './GoogleAuth';
+
 
 function App() {
+
+  const { isSignedIn } = useGoogleAuth();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {isSignedIn ? <HomePage /> : <LoginPage/>}
     </div>
   );
 }

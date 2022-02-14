@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { GoogleAuthProvider } from './GoogleAuth';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <GoogleAuthProvider>
+      <App />
+    </GoogleAuthProvider>,
   document.getElementById('root')
 );
 
