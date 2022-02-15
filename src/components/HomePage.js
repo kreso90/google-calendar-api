@@ -50,7 +50,6 @@ const HomePage = () => {
         });
       }).then(function (response) {
           setItem(response.result.items)
-          console.log(response.result.items)
       });
     });
   };
@@ -86,6 +85,25 @@ const HomePage = () => {
     printCalendar()
   }, [event, days, deleteEv])
 
+  /*
+  const day = (item
+  ).map((value)=> {
+     value.start = value.start.dateTime
+     return value
+  })
+
+  const groupBy = (array, key) => {
+    return array.reduce((result, currentValue) => {
+      (result[currentValue[key]] = result[currentValue[key]] || []).push(
+        currentValue
+      );
+      return result;
+    }, {}); 
+  };
+  const groupByDay = groupBy(day, 'start');
+  console.log(groupByDay)
+  */
+
   return (
     <div className='container'>
       <select onChange={(e) => {
@@ -115,9 +133,8 @@ const HomePage = () => {
           ))}
         </tbody>
     </table>
-      
 
-      <form onSubmit={addEvent}>
+    <form onSubmit={addEvent}>
 
         <label>Enter event name:</label>
         <input 
