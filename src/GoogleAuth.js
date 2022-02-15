@@ -7,6 +7,7 @@ export const GoogleAuthProvider = ({children}) => {
   
   const googleAuth = useGoogleLogin({
     clientId: "880782189600-n43tfp2sc95sdc5fjg59fr88h4vrsmvf.apps.googleusercontent.com", 
+    scope: "https://www.googleapis.com/auth/calendar",
   })
   return (
     <GoogleAuthContext.Provider value={googleAuth}>

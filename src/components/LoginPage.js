@@ -1,17 +1,15 @@
-import React, {useEffect, useState} from 'react'
-import { gapi } from 'gapi-script'
+import React from 'react'
 import { useGoogleAuth } from '../GoogleAuth';
+
 const LoginPage = () => {
   const { signIn } = useGoogleAuth();
 
-  const { isSignedIn } = useGoogleAuth();
-  const [name, setName] = useState([])
-  
   return (
-    <div>LoginPage
-    <button onClick={signIn}>Login</button>
-   
-   
+    <div className='login'>
+      <div className='login-wrapper'>
+        <h1>Login</h1>
+        <button onClick={signIn}>Google Login</button>
+      </div>
     </div>
   )
 }
