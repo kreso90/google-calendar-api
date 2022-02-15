@@ -4,26 +4,36 @@ import { useGoogleAuth } from '../GoogleAuth';
 import moment from 'moment';
 
 const HomePage = () => {
-
+ 
   const { signOut } = useGoogleAuth();
   const [item, setItem] = useState([]);
+  const [deleteEv, setDeleteEv] = useState([]);
   const [event, setEvent] = useState({});
   const [days, setDays] = useState(7)
-  const [clicked, setClicked] = useState(false)
 
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setEvent(values => ({...values, [name]: value}))
   }
+
+  var events = {
+    'summary': event.summary,
+    'start': {
+      'dateTime': new Date(event.start),
+      'timeZone': 'UTC'
+    },
+    'end': {
+      'dateTime': new Date(event.end),
+      'timeZone': 'UTC'
+    },
+  }
   
   const calendarId = 'primary';
 
   let date = new Date();
-  const maxDate = date.setDate(date.getDate() + days)
-  const currentDate = new Date(maxDate)
-  console.log(currentDate)
-  console.log(maxDate)
+  const maxDate = date.setDate(date.getDate()) 
+  const currentDate = moment(maxDate).add(days, 'days').format()
 
   function printCalendar(){
     gapi.load('client:auth2', () => {
@@ -36,17 +46,17 @@ const HomePage = () => {
             singleEvents: true,
             orderBy: 'startTime',
             timeMin: (new Date()).toISOString(),
-            timeMax: (new Date(maxDate)).toISOString(),
+            timeMax: currentDate,
         });
       }).then(function (response) {
           setItem(response.result.items)
+          console.log(response.result.items)
       });
     });
   };
 
   function addEvent(e)  {
     e.preventDefault();
-    
     gapi.client.init({
       'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
     }).then(function () {
@@ -55,27 +65,12 @@ const HomePage = () => {
           'resource': events,
       });
     })
-    
-    var events = {
-      'summary': event.summary,
-      'start': {
-        'dateTime': new Date(event.start),
-        'timeZone': 'UTC'
-      },
-      'end': {
-        'dateTime': new Date(event.end),
-        'timeZone': 'UTC'
-      },
-    }
-  
     setEvent('')
     printCalendar();
   }
 
-  function deleteEvent(eventId){
-    const newClicked = true;
-    setClicked(newClicked)
-    if(newClicked){
+  function deleteEvent(eventId, index){
+    setDeleteEv(deleteEv.filter((v, event) => event !== index));
     gapi.client.init({
       'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
     }).then(function () {
@@ -87,11 +82,9 @@ const HomePage = () => {
     printCalendar();
   }
   
-  }
-  
   useEffect(() =>  {
     printCalendar()
-  }, [event])
+  }, [event, days, deleteEv])
 
   return (
     <div className='container'>
@@ -102,7 +95,7 @@ const HomePage = () => {
         }} value={days}>
           <option value={1}>1 day</option>
           <option value={7}>7 days</option>
-          <option value={3}>30 days</option>
+          <option value={30}>30 days</option>
       </select>
 
       <table>
@@ -126,36 +119,36 @@ const HomePage = () => {
 
       <form onSubmit={addEvent}>
 
-      <label>Enter event name:</label>
-      <input 
-        type="text" 
-        name="summary" 
-        value={event.summary || ""} 
-        onChange={handleChange}
-      />
-      
-      <label>Enter start date and time:  </label>
+        <label>Enter event name:</label>
         <input 
-          type="datetime-local" 
-          name="start" step="2"
-          value={event.start || ""} 
+          type="text" 
+          name="summary" 
+          value={event.summary || ""} 
           onChange={handleChange}
         />
-      
-        <label>Enter end date and time: </label>
-        <input 
-          type="datetime-local" 
-          name="end" step="2"
-          value={event.end || ""} 
-          onChange={handleChange}
-        />
-       
-        <input type="submit" />
-    </form>
+        
+        <label>Enter start date and time:  </label>
+          <input 
+            type="datetime-local" 
+            name="start" step="2"
+            value={event.start || ""} 
+            onChange={handleChange}
+          />
+        
+          <label>Enter end date and time: </label>
+          <input 
+            type="datetime-local" 
+            name="end" step="2"
+            value={event.end || ""} 
+            onChange={handleChange}
+          />
+        
+          <input type="submit" />
+      </form>
    
-    <div className='logout'>
-      <button onClick={signOut}>Logout</button>
-    </div>
+      <div className='logout'>
+        <button onClick={signOut}>Logout</button>
+      </div>
     </div>
   )
 }
